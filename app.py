@@ -945,7 +945,7 @@ def send_feedback_email(user_name, user_email, feedback_text, satisfaction):
         html_body = f"""
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
+            <div style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
                 <h2 style="color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px;">
                     New Feedback Received
                 </h2>
@@ -1196,13 +1196,13 @@ def movie_search_and_recommend():
                     st.rerun()
         
         # Load more button in center
-        with page_controls[2]:
-            if st.session_state.current_page < max_pages:
-                if st.button("📥 Load More", key="load_more", type="primary", use_container_width=True):
-                    st.session_state.current_page += 1
-                    st.rerun()
-            else:
-                st.markdown("<div style='text-align:center'>End of results</div>", unsafe_allow_html=True)
+        # with page_controls[2]:
+        #     if st.session_state.current_page < max_pages:
+        #         if st.button("📥 Load More", key="load_more", type="primary", use_container_width=True):
+        #             st.session_state.current_page += 1
+        #             st.rerun()
+        #     else:
+        #         st.markdown("<div style='text-align:center'>End of results</div>", unsafe_allow_html=True)
         
         # Next page button
         with page_controls[3]:
@@ -1561,7 +1561,7 @@ def recommendations_section():
 # Main application flow
 def main():
     # Create tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["🔍 Movie Search", "🎯 Recommendations", "📊 Analytics", "📝 Feedback"])
+    tab1, tab2, tab3 = st.tabs(["🔍 Movie Search", "🎯 Recommendations", "📝 Feedback"])
     
     with tab1:
         # Movie search functionality
@@ -1571,14 +1571,14 @@ def main():
         # Movie recommendations
         recommendations_section()
     
-    with tab3:
-        # Analytics Dashboard
-        st.header("📊 Analytics Dashboard")
-        tab_top_rated, tab_popular, tab_actors = st.tabs(["Top Rated", "Most Popular", "Actor Analysis"])
+    # with tab3:
+    #     # Analytics Dashboard
+    #     st.header("📊 Analytics Dashboard")
+    #     tab_top_rated, tab_popular, tab_actors = st.tabs(["Top Rated", "Most Popular", "Actor Analysis"])
 
         # Get screen width using Streamlit's layout features
-        use_container_width = True
-    with tab4:
+        # use_container_width = True
+    with tab3:
         feedback_section(in_sidebar=False)
 
 
@@ -1617,66 +1617,66 @@ def main():
             )
             return fig
 
-        with tab_top_rated:
-            query = """
-            MATCH (m:Movie)
-            WHERE m.vote_count > 100
-            RETURN m.title as title, m.vote_average as rating, m.vote_count as votes
-            ORDER BY m.vote_average DESC
-            LIMIT 10
-            """
-            top_rated = pd.DataFrame(run_query(query))
-            st.subheader("Top Rated Movies")
-            fig = create_responsive_bar(
-                top_rated,
-                'title',
-                'rating',
-                "Top Rated Movies",
-                'Movie Title',
-                'Rating',
-                'votes'
-            )
-            st.plotly_chart(fig, use_container_width=use_container_width)
+        # with tab_top_rated:
+        #     query = """
+        #     MATCH (m:Movie)
+        #     WHERE m.vote_count > 100
+        #     RETURN m.title as title, m.vote_average as rating, m.vote_count as votes
+        #     ORDER BY m.vote_average DESC
+        #     LIMIT 10
+        #     """
+        #     top_rated = pd.DataFrame(run_query(query))
+        #     st.subheader("Top Rated Movies")
+        #     fig = create_responsive_bar(
+        #         top_rated,
+        #         'title',
+        #         'rating',
+        #         "Top Rated Movies",
+        #         'Movie Title',
+        #         'Rating',
+        #         'votes'
+        #     )
+        #     st.plotly_chart(fig, use_container_width=use_container_width)
 
-        with tab_popular:
-            query = """
-            MATCH (m:Movie)
-            RETURN m.title as title, m.popularity as popularity, m.vote_count as votes
-            ORDER BY m.popularity DESC
-            LIMIT 10
-            """
-            popular = pd.DataFrame(run_query(query))
-            st.subheader("Most Popular Movies")
-            fig = create_responsive_bar(
-                popular,
-                'title',
-                'popularity',
-                "Most Popular Movies",
-                'Movie Title',
-                'Popularity Score',
-                'votes'
-            )
-            st.plotly_chart(fig, use_container_width=use_container_width)
+        # with tab_popular:
+        #     query = """
+        #     MATCH (m:Movie)
+        #     RETURN m.title as title, m.popularity as popularity, m.vote_count as votes
+        #     ORDER BY m.popularity DESC
+        #     LIMIT 10
+        #     """
+        #     popular = pd.DataFrame(run_query(query))
+        #     st.subheader("Most Popular Movies")
+        #     fig = create_responsive_bar(
+        #         popular,
+        #         'title',
+        #         'popularity',
+        #         "Most Popular Movies",
+        #         'Movie Title',
+        #         'Popularity Score',
+        #         'votes'
+        #     )
+        #     st.plotly_chart(fig, use_container_width=use_container_width)
 
-        with tab_actors:
-            query = """
-            MATCH (a:Person)-[r:ACTED_IN]->(m:Movie)
-            RETURN a.name as actor, count(m) as movie_count, avg(m.vote_average) as avg_rating
-            ORDER BY movie_count DESC
-            LIMIT 10
-            """
-            prolific_actors = pd.DataFrame(run_query(query))
-            st.subheader("Most Prolific Actors")
-            fig = create_responsive_bar(
-                prolific_actors,
-                'actor',
-                'movie_count',
-                "Actors with Most Movies",
-                'Actor Name',
-                'Number of Movies',
-                'avg_rating'
-            )
-            st.plotly_chart(fig, use_container_width=use_container_width)
+        # with tab_actors:
+        #     query = """
+        #     MATCH (a:Person)-[r:ACTED_IN]->(m:Movie)
+        #     RETURN a.name as actor, count(m) as movie_count, avg(m.vote_average) as avg_rating
+        #     ORDER BY movie_count DESC
+        #     LIMIT 10
+        #     """
+        #     prolific_actors = pd.DataFrame(run_query(query))
+        #     st.subheader("Most Prolific Actors")
+        #     fig = create_responsive_bar(
+        #         prolific_actors,
+        #         'actor',
+        #         'movie_count',
+        #         "Actors with Most Movies",
+        #         'Actor Name',
+        #         'Number of Movies',
+        #         'avg_rating'
+        #     )
+        #     st.plotly_chart(fig, use_container_width=use_container_width)
 
     # Feedback section in a floating button
     # with st.sidebar:
